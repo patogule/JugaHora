@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"   // Cambiamos el proveedor a PostgreSQL
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())  // Autoincrement para PostgreSQL
+  email       String   @unique                       // Correo electrónico único
+  password    String                                 // Contraseña
+  firstName   String                                 // Primer nombre
+  lastName    String                                 // Apellido
+  createdAt   DateTime @default(now())               // Timestamp de creación
+  updatedAt   DateTime @updatedAt                    // Timestamp que se actualiza automáticamente
+  phoneNumber String?                                // Teléfono opcional
+  address     String?                                // Dirección opcional
+  age         Int?                                   // Edad opcional
+  
+  Partidos    Partidos[]                             // Relación con la tabla Partidos
+}
+
+model Partidos {
+  id        Int      @id @default(autoincrement())   // Autoincrement para PostgreSQL
+  userId    Int                                      // Clave foránea a la tabla Users
+  fecha     DateTime @default(now())                 // Fecha del partido con valor por defecto
+  jugadores String                                   // Lista de jugadores
+  resultado String                                   // Resultado del partido
+
+  User      User     @relation(fields: [userId], references: [id])  // Relación con la tabla Users
+}
